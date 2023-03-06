@@ -3,23 +3,29 @@ const userModel = require("../models/userModel");
 
 // Login User
 exports.getUsers = asyncErrorHandler(async (req, res, next) => {
-  let page = req.query.page || 1;
-  let perPage = req.query.perPage || 10;
+  const page = req.query.page || 1;
+  const perPage = req.query.perPage || 10;
+  const search = req.query.search;
 
+  const query = search
+    ? {
+        [search?.keyword]: { $regex: search?.value },
+      }
+    : {};
+  const listAllUser =await userModel.find(query);
   await userModel
-    .find()
+    .find(query)
     .skip(perPage * page - perPage)
     .limit(perPage)
     .exec((err, users) => {
-      userModel.countDocuments((err, count) => {
-        if (err) return next(err);
-        res.status(200).json({
-          success: true,
-          users,
-          page: page,
-          perPage: perPage,
-          totalPage: Math.floor(count / perPage),
-        });
+      if (err) return next(err);
+      res.status(200).json({
+        success: true,
+        users,
+        page: page,
+        perPage: perPage,
+        totalPage: 0,
+        totalCount: listAllUser.length,
       });
     });
 });
