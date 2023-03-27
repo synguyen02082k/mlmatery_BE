@@ -8,11 +8,13 @@ const {
   updateUser,
   loginUser,
   refreshToken,
+  getMe,
 } = require("../controllers/userController");
 const { isAuthenticatedUser } = require("../middlewares/auth");
 
 const router = express.Router();
 
+router.route("/me").get(isAuthenticatedUser, getMe);
 router.route("/login").post(loginUser);
 router.route("/token").post(refreshToken);
 router.route("/users").get(isAuthenticatedUser, getUsers);

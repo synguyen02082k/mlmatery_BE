@@ -4,6 +4,13 @@ const ErrorHandler = require("../utils/errorHandler");
 const validator = require("email-validator");
 const jwt = require("jsonwebtoken");
 
+exports.getMe = asyncErrorHandler(async (req, res, next) => {
+  res.status(200).json({
+    success: true,
+    user:req.user,
+  });
+})
+
 // Login User
 exports.loginUser = asyncErrorHandler(async (req, res, next) => {
   const { email, password } = req.body;
@@ -52,8 +59,9 @@ exports.refreshToken = asyncErrorHandler(async (req, res, next) => {
 exports.getUsers = asyncErrorHandler(async (req, res, next) => {
   const page = req.query.page || 1;
   const perPage = req.query.perPage || 10;
-  const search = req.query.search;
+  const search = JSON.parse(req.query.search) ;
   const sort = req.query.sort ?? {};
+  console.log(search);
   const query = search
     ? {
         [search?.keyword]: { $regex: search?.value },

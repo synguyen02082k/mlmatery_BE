@@ -19,15 +19,15 @@ module.exports = (err, req, res, next) => {
   }
 
   // wrong jwt error
-  if (err.code === "JsonWebTokenError") {
-    const message = "Lỗi JWT";
-    err = new ErrorHandler(message, 400);
+  if (err.code === "jwt malformed") {
+    const message = "Invalid token!";
+    err = new ErrorHandler(message, 401);
   }
 
   // jwt expire error
   if (err.code === "jwt expired") {
     const message = "JWT đã hết hạn";
-    err = new ErrorHandler(message, 400);
+    err = new ErrorHandler(message, 401);
   }
 
   res.status(err.statusCode).json({
