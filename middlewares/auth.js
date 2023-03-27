@@ -17,7 +17,7 @@ exports.isAuthenticatedUser = asyncErrorHandler(async (req, res, next) => {
     req.user = await User.findById(decodedData.id);
     next();
   } catch (err) {
-    return next(new ErrorHandler('Token không có giá trị!', 401));
+    return next(new ErrorHandler('Token không có giá trị!', 401, err.message));
   }
 });
 
